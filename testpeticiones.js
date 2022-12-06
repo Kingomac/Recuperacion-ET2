@@ -31,16 +31,16 @@ function realizarTestPeticiones() {
       .then((resultado) => {
         tdObtenido.textContent = resultado;
         if (resultado == prueba[1].condicion.valor) {
-          tdOK.textContent = "OK";
+          tdOK.textContent = "SI";
           tr.style.backgroundColor = "#56e359";
         } else {
-          tdOK.textContent = "FALLO";
+          tdOK.textContent = "NO";
           tr.style.backgroundColor = "#ff3838";
         }
       })
       .catch((err) => {
         tdObtenido.textContent = err;
-        tdOK.textContent = "FALLO";
+        tdOK.textContent = "NO";
         tr.style.backgroundColor = "#ff70f1";
       });
   }
