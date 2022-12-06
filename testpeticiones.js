@@ -1,3 +1,5 @@
+const URL_BACK = "http://193.147.87.202/Back/index.php";
+
 /*
 
 	funcion principal para iniciar la tabla e invocar la llamada a la funcion que lanza los test a la promesa
@@ -10,19 +12,37 @@ function realizarTestPeticiones() {
   $("#tituloresultados").append(titulotabla);
 
   const tbody = document.getElementById("datosresultados");
-  let promesas = [];
   for (const prueba of Object.entries(test)) {
-    tbody.append(
-      crearTR(
-        prueba[0],
-        prueba[1].valores.controlador,
-        prueba[1].valores.action,
-        getAtributos(prueba[1].valores),
-        document.createElement("progress"),
-        prueba[1].condicion.valor,
-        document.createElement("progress")
-      )
+    const tdObtenido = document.createElement("td");
+    tdObtenido.append(document.createElement("progress"));
+    const tdOK = document.createElement("td");
+    tdOK.append(document.createElement("progress"));
+    const tr = crearTR(
+      prueba[0],
+      prueba[1].valores.controlador,
+      prueba[1].valores.action,
+      getAtributos(prueba[1].valores),
+      tdObtenido,
+      prueba[1].condicion.valor,
+      tdOK
     );
+    tbody.append(tr);
+    peticionBack(new URLSearchParams(prueba[1].valores))
+      .then((resultado) => {
+        tdObtenido.textContent = resultado;
+        if (resultado == prueba[1].condicion.valor) {
+          tdOK.textContent = "OK";
+          tr.style.backgroundColor = "#56e359";
+        } else {
+          tdOK.textContent = "FALLO";
+          tr.style.backgroundColor = "#ff3838";
+        }
+      })
+      .catch((err) => {
+        tdObtenido.textContent = err;
+        tdOK.textContent = "FALLO";
+        tr.style.backgroundColor = "#ff70f1";
+      });
   }
 }
 
@@ -62,14 +82,18 @@ function peticionBack(datos) {
 }
 
 /**
- * @param  {...Node|string} nodos
+ * @param  {...Node|string|{id: string}} nodos
  */
 function crearTR(...nodos) {
   const tr = document.createElement("tr");
   for (const n of nodos) {
-    const td = document.createElement("td");
-    td.append(n);
-    tr.append(td);
+    if (n instanceof HTMLTableCellElement) {
+      tr.append(n);
+    } else {
+      const td = document.createElement("td");
+      td.append(n);
+      tr.append(td);
+    }
   }
   return tr;
 }
