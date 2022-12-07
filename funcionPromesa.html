@@ -10,8 +10,22 @@
   </head>
   <body onload="realizarTestPeticiones();">
     <table id="tablaresultados" border="1">
-      <thead id="tituloresultados"></thead>
-      <tbody id="datosresultados"></tbody>
+      <thead id="tituloresultados">
+        <tr>
+          <th>Num. Prueba</th>
+          <th>Controlador</th>
+          <th>Accion</th>
+          <th>Atributos</th>
+          <th>Obtenido</th>
+          <th>Esperado</th>
+          <th>Correcta</th>
+        </tr>
+      </thead>
+      <tbody id="datosresultados">
+        <tr id="tr-barra-carga">
+          <td colspan="7"><progress style="width: 100%"></progress></td>
+        </tr>
+      </tbody>
     </table>
   </body>
 </html>
