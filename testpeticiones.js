@@ -31,7 +31,7 @@ async function realizarTestPeticiones() {
         prueba[1].condicion.valor,
         correcta ? "SI" : "NO"
       );
-      tr.style.backgroundColor = correcta ? "#56e359" : "#ff3838";
+      tr.style.backgroundColor = correcta ? "#56e359" : "#ff4747";
     } catch (err) {
       tr = crearTR(
         prueba[0],
