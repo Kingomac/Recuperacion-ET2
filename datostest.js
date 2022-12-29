@@ -52,4 +52,13 @@ const test = {
     },
     condicion: { valor: "admin_no_se_puede_borrar_KO" },
   },
+  5: {
+    valores: {
+      controlador: "AUTH",
+      action: "LOGIN",
+      usuario: "root",
+      contrasena: "root",
+    },
+    condicion: { valor: "LOGIN_OK" },
+  },
 };

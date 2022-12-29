@@ -16,6 +16,7 @@ async function realizarTestPeticiones() {
 
   for (const prueba of arrPruebas) {
     let tr;
+    preprocesarPeticion(prueba[1].valores);
     try {
       const resultado = await peticionBack(
         new URLSearchParams(prueba[1].valores)
@@ -52,7 +53,7 @@ async function realizarTestPeticiones() {
 }
 
 /**
- *
+ * Crea una lista desordenada con los atributos
  * @param {Record<string, string>} valores
  * @returns
  */
@@ -68,6 +69,29 @@ function getAtributos(valores) {
   return lista;
 }
 
+/**
+ * P
+ * @param {*} datos
+ */
+function preprocesarPeticion(datos) {
+  if (datos.contrasena) {
+    datos.contrasenaSinEncriptar = datos.contrasena;
+    datos.contrasena = hex_md5(datos.contrasena);
+  }
+}
+
+const OPCIONES = Object.freeze({
+  encriptar: {
+    nombre: "encriptar",
+    idInput: "check_encriptar_contrasena",
+  },
+});
+
+/**
+ * Hace una petición POST al back
+ * @param {*} datos body de la petición
+ * @returns código de respuesta del back
+ */
 function peticionBack(datos) {
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -87,7 +111,9 @@ function peticionBack(datos) {
 }
 
 /**
+ * Crea un `<tr>` de una lista de nodos
  * @param  {...Node|string|{id: string}} nodos
+ * @returns
  */
 function crearTR(...nodos) {
   const tr = document.createElement("tr");
