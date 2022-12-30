@@ -15,33 +15,27 @@ async function realizarTestPeticiones() {
   barraCarga.value = 0;
 
   for (const prueba of arrPruebas) {
-    let tr;
+    const tr = crearTR(
+      prueba[0],
+      prueba[1].valores.controlador,
+      prueba[1].valores.action,
+      getAtributos(prueba[1].valores)
+    );
+
     preprocesarPeticion(prueba[1].valores);
+
     try {
       const resultado = await peticionBack(
         new URLSearchParams(prueba[1].valores)
       );
       const correcta = resultado == prueba[1].condicion.valor;
-      tr = crearTR(
-        prueba[0],
-        prueba[1].valores.controlador,
-        prueba[1].valores.action,
-        getAtributos(prueba[1].valores),
-        resultado,
-        prueba[1].condicion.valor,
-        correcta ? "SI" : "NO"
+      tr.append(
+        ...crearTR(resultado, prueba[1].condicion.valor, correcta ? "SI" : "NO")
+          .children
       );
       tr.style.backgroundColor = correcta ? "#56e359" : "#ff4747";
     } catch (err) {
-      tr = crearTR(
-        prueba[0],
-        prueba[1].valores.controlador,
-        prueba[1].valores.action,
-        getAtributos(prueba[1].valores),
-        err,
-        prueba[1].condicion.valor,
-        "NO"
-      );
+      tr.append(...crearTR(resultado, prueba[1].condicion.valor, err).children);
       tr.style.backgroundColor = "#ff70f1";
     } finally {
       tbody.append(tr);
@@ -64,6 +58,11 @@ function getAtributos(valores) {
     .forEach(([atrib, valor]) => {
       const el = document.createElement("li");
       el.append(`${atrib} : ${valor}`);
+      if (atrib == "contrasena") {
+        const el2 = document.createElement("li");
+        el2.append(`contrasenaEncriptada : ${hex_md5(valor)}`);
+        lista.append(el2);
+      }
       lista.append(el);
     });
   return lista;
@@ -75,17 +74,9 @@ function getAtributos(valores) {
  */
 function preprocesarPeticion(datos) {
   if (datos.contrasena) {
-    datos.contrasenaSinEncriptar = datos.contrasena;
     datos.contrasena = hex_md5(datos.contrasena);
   }
 }
-
-const OPCIONES = Object.freeze({
-  encriptar: {
-    nombre: "encriptar",
-    idInput: "check_encriptar_contrasena",
-  },
-});
 
 /**
  * Hace una petición POST al back

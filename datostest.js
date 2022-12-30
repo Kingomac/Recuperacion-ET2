@@ -41,7 +41,7 @@ const test = {
       usuario: "",
       id_rol: 0,
     },
-    condicion: { valor: "" },
+    condicion: { valor: "dni_es_nulo_KO" },
   },
   4: {
     valores: {
