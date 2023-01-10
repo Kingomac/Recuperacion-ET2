@@ -22,8 +22,6 @@ async function realizarTestPeticiones() {
       getAtributos(prueba[1].valores)
     );
 
-    preprocesarPeticion(prueba[1].valores);
-
     try {
       const resultado = await peticionBack(
         new URLSearchParams(prueba[1].valores)
@@ -58,24 +56,14 @@ function getAtributos(valores) {
     .forEach(([atrib, valor]) => {
       const el = document.createElement("li");
       el.append(`${atrib} : ${valor}`);
-      if (atrib == "contrasena") {
+      /*if (atrib == "contrasena") {
         const el2 = document.createElement("li");
         el2.append(`contrasenaEncriptada : ${hex_md5(valor)}`);
         lista.append(el2);
-      }
+      }*/
       lista.append(el);
     });
   return lista;
-}
-
-/**
- * P
- * @param {*} datos
- */
-function preprocesarPeticion(datos) {
-  if (datos.contrasena) {
-    datos.contrasena = hex_md5(datos.contrasena);
-  }
 }
 
 /**
